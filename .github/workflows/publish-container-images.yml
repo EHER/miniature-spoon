@@ -45,7 +45,7 @@ jobs:
           context: .
           target: app
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ github.repository }}/app:latest
+          tags: eher/miniature-spoon/app:latest
 
       - name: Build and push app-dev image
         id: build-and-push-app-dev
@@ -54,7 +54,7 @@ jobs:
           context: .
           target: app-dev
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ github.repository }}/app-dev:latest
+          tags: eher/miniature-spoon/app-dev:latest
 
       - name: Build and push web image
         id: build-and-push-web
@@ -63,7 +63,7 @@ jobs:
           context: .
           target: web
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ github.repository }}/web:latest
+          tags: eher/miniature-spoon/web:latest
 
       - name: Build and push web-dev image
         id: build-and-push-web-dev
@@ -72,4 +72,4 @@ jobs:
           context: .
           target: web-dev
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ github.repository }}/web-dev:latest
+          tags: eher/miniature-spoon/web-dev:latest
