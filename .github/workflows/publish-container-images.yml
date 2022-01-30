@@ -14,6 +14,7 @@ on:
       - master
 
 env:
+  IMAGE_NAME: ${{ github.repository }}
   REGISTRY: ghcr.io
 
 jobs:
@@ -38,38 +39,62 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract app metadata
+        id: meta-app
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app
+
       - name: Build and push app image
         id: build-and-push-app
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          target: app
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/eher/miniature-spoon/app:latest
+          tags: ${{ steps.meta-app.outputs.tags }}
+          labels: ${{ steps.meta-app.outputs.labels }}
 
-      - name: Build and push app-dev image
+      - name: Extract app-dev metadata
+        id: meta-app-dev
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app-dev
+
+      - name: Build and push app image
         id: build-and-push-app-dev
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          target: app-dev
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/eher/miniature-spoon/app-dev:latest
+          tags: ${{ steps.meta-app-dev.outputs.tags }}
+          labels: ${{ steps.meta-app-dev.outputs.labels }}
+
+      - name: Extract web metadata
+        id: meta-web
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/web
 
       - name: Build and push web image
         id: build-and-push-web
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          target: web
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/eher/miniature-spoon/web:latest
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
+
+      - name: Extract web-dev metadata
+        id: meta-web-dev
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/web-dev
 
       - name: Build and push web-dev image
         id: build-and-push-web-dev
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          target: web-dev
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/eher/miniature-spoon/web-dev:latest
+          tags: ${{ steps.meta-web-dev.outputs.tags }}
+          labels: ${{ steps.meta-web-dev.outputs.labels }}
